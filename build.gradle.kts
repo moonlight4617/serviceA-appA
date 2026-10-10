@@ -31,6 +31,14 @@ repositories {
     mavenCentral()
 }
 
+// セキュリティゲート（ADR-0008）が検出した埋め込みTomcatのCRITICAL脆弱性
+// （CVE-2026-65182 / CVE-2026-65905 / CVE-2026-68525）への対応。
+// Spring Bootが管理するバージョンを修正版で上書きする。
+//
+// 抑制（security-exceptions.yaml）ではなく実際に上げることで対応している。
+// 修正版が提供されている脆弱性は抑制の対象にすべきではない。
+extra["tomcat.version"] = "11.0.25"
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 

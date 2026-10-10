@@ -17,7 +17,12 @@ output "deployed_image" {
 
 output "url_path" {
   description = "ALB上のパス接頭辞（ADR-0013）"
-  value       = local.path_prefix
+  # path_prefix は data.aws_ssm_parameter 由来のため、Terraformは
+  # 自動的にsensitiveとして扱う。outputに出すには明示的な解除が必要。
+  #
+  # /dev/appA のようなパスは機密ではないため nonsensitive() で解除する。
+  # バケット名やARNを含むものは解除してはいけない（ADR-0002）。
+  value = nonsensitive(local.path_prefix)
 }
 
 output "log_group" {
