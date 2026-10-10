@@ -57,10 +57,11 @@ spotbugs {
 }
 
 tasks.spotbugsMain {
+    // SpotBugs 6.x では既定のレポートが登録されていないため、
+    // reports.named("xml") を参照すると「SpotBugsReport with name 'xml' not found」で
+    // タスクの生成自体に失敗する。SARIFだけを作成する（ADR-0008: 判定はSARIFのみ）
     reports.create("sarif") {
         required.set(true)
         outputLocation.set(layout.buildDirectory.file("reports/spotbugs/main.sarif"))
     }
-    // XMLとHTMLは使わない。SARIFに統一する
-    reports.named("xml") { required.set(false) }
 }
