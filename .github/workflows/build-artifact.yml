@@ -1,0 +1,19 @@
+# 成果物のビルド（ADR-0005）
+#
+# mainマージ時にイメージを1回だけビルドしてECRへpushする。
+# デプロイはしない。昇格チェーン（main → stage → prod）の起点になる。
+
+name: Build artifact
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    uses: moonlight4617/platform-cicd/.github/workflows/build-artifact.yml@v1
+    secrets: inherit

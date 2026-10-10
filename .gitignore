@@ -1,0 +1,22 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/tfplan
+terraform/*.tfplan
+# 環境別tfvarsは追跡する（env/ 配下に機密は置かない）
+# ローカル実行用の実値はここに置く（ADR-0002）
+local/
+
+# CIの出力
+reports/

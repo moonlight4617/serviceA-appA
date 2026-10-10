@@ -1,0 +1,20 @@
+# ドリフト検知（1日1回・深夜）
+#
+# 対象は stage / prod のみ。devはサンドボックスなので対象外。
+
+name: Drift detection
+
+on:
+  schedule:
+    - cron: "0 18 * * *"   # UTC 18:00 = JST 03:00
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+
+jobs:
+  drift:
+    uses: moonlight4617/platform-cicd/.github/workflows/drift-detection.yml@v1
+    secrets: inherit

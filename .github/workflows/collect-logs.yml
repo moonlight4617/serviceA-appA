@@ -1,0 +1,30 @@
+# 実行ログのS3格納（ADR-0009）
+#
+# GitHub Actionsの実行ログは、実行中のジョブからは取得できない。
+# ジョブ完了後に workflow_run を契機としてAPIから取得する必要があるため、
+# CIとは別のワークフローになっている。
+
+name: Collect logs
+
+on:
+  workflow_run:
+    # ADR-0009の要件は「CI/CDの実行ログ」なので、CDのワークフローも対象にする
+    workflows:
+      - CI
+      - Build artifact
+      - Deploy dev
+      - Release stage
+      - Release prod
+      - Emergency release
+      - Drift detection
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read          # 実行ログの取得に必要
+  id-token: write
+
+jobs:
+  collect:
+    uses: moonlight4617/platform-cicd/.github/workflows/collect-logs.yml@v1
+    secrets: inherit

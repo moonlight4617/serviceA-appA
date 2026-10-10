@@ -1,0 +1,32 @@
+# 緊急リリース（承認1段・SRE）
+#
+# セキュリティゲートをスキップする代わりに、
+# 事後報告をするまで通常prodリリースがブロックされる。
+
+name: Emergency release
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: リリース対象のcommit SHA（ロールバック時は過去のSHA）
+        required: true
+      incident_id:
+        description: インシデントID
+        required: true
+      reason:
+        description: 緊急リリースを行う理由（10文字以上）
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  release:
+    uses: moonlight4617/platform-cicd/.github/workflows/emergency-release.yml@v1
+    with:
+      commit_sha: ${{ inputs.commit_sha }}
+      incident_id: ${{ inputs.incident_id }}
+      reason: ${{ inputs.reason }}
+    secrets: inherit

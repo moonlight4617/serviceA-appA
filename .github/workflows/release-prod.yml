@@ -1,0 +1,34 @@
+# 本番リリース（承認3段）
+#
+# 事前チェックで次を検証する:
+#   - main由来の成果物であること
+#   - 同一digestがstageで成功していること
+#   - 未報告の緊急リリースがないこと
+
+name: Release prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: リリース対象のcommit SHA
+        required: true
+      ticket_ids:
+        description: 関連チケットID（カンマ区切り）。必須
+        required: true
+      version:
+        description: Gitタグに使うバージョン（例 1.4.0）
+        required: false
+
+permissions:
+  contents: write     # Gitタグの作成
+  id-token: write
+
+jobs:
+  release:
+    uses: moonlight4617/platform-cicd/.github/workflows/release-prod.yml@v1
+    with:
+      commit_sha: ${{ inputs.commit_sha }}
+      ticket_ids: ${{ inputs.ticket_ids }}
+      version: ${{ inputs.version }}
+    secrets: inherit

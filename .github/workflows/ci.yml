@@ -1,0 +1,24 @@
+# アプリ側のCIはこれだけ（ADR-0001）
+#
+# 処理は platform-cicd に集約されている。アプリ側に実装を持たせないことで、
+# チームごとの書き方の差がデプロイ精度の差になるのを防ぐ。
+#
+# 共通ワークフローはタグ（@v1）で参照する。基盤側の変更が
+# 全アプリに一斉波及するのを防ぐため。
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write        # OIDCでAWSロールを引き受けるため（ADR-0006）
+  pull-requests: write   # PRへの要約コメント
+
+jobs:
+  ci:
+    uses: moonlight4617/platform-cicd/.github/workflows/ci.yml@v1
+    secrets: inherit

@@ -1,0 +1,6 @@
+# dev環境。ビルド時ではなく実行時に選択される（ADR-0005）
+app:
+  environment-label: dev
+logging:
+  level:
+    com.example.appa: DEBUG

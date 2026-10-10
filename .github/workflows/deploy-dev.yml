@@ -1,0 +1,26 @@
+# devへのデプロイ（サンドボックス）
+#
+# 任意のブランチを手動でデプロイできる。承認なし。
+# devは昇格チェーン外なので、ここでの成功はstage/prodへの昇格の根拠にならない。
+
+name: Deploy dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      build:
+        description: イメージをビルドし直すか
+        type: boolean
+        required: false
+        default: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    uses: moonlight4617/platform-cicd/.github/workflows/deploy-dev.yml@v1
+    with:
+      build: ${{ inputs.build == true }}
+    secrets: inherit

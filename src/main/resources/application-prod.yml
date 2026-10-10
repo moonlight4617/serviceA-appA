@@ -1,0 +1,7 @@
+# prod環境
+app:
+  environment-label: prod
+logging:
+  level:
+    root: WARN
+    com.example.appa: INFO

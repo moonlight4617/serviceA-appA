@@ -1,0 +1,20 @@
+# 共通CI/CDへの宣言（ADR-0001）
+#
+# このファイルがCI/CDの入口。アプリ側が書くのはこの宣言と、
+# 共通ワークフローを呼ぶだけの数行（.github/workflows/）のみ。
+
+service: serviceA
+app: appA
+
+# Java / Spring Boot
+runtime: java
+
+# ECSで動かす。Terraformでデプロイする（ADR-0007）
+deploy: ecs
+
+# ADR-0005: 環境別ビルドの例外を使わない。
+# Spring Profileは実行時選択なので、1つのjarを3環境で昇格させられる。
+# 環境ごとの設定は ECSタスク定義の環境変数から注入する。
+build_per_env: false
+
+terraform_dir: terraform

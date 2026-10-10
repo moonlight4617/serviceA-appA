@@ -1,0 +1,6 @@
+# stage環境
+app:
+  environment-label: stage
+logging:
+  level:
+    com.example.appa: INFO

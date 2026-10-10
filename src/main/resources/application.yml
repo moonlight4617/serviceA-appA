@@ -1,0 +1,43 @@
+# ADR-0005: 1つのjarに全環境の設定を同梱し、実行時に選択する。
+#
+# プロファイルの選択は ECSタスク定義の環境変数で行う:
+#   SPRING_PROFILES_ACTIVE=prod
+#
+# ビルド時に環境を固定しないため、同じ成果物（image digest）を
+# dev → stage → prod へ昇格させられる。
+
+spring:
+  application:
+    name: appA
+  # プロファイル未指定で起動した場合に気づけるようにする。
+  # 本来はタスク定義で必ず指定される
+  profiles:
+    default: local
+
+server:
+  port: 8080
+  # ALBがパスを書き換えられないため、アプリ側が接頭辞を認識する（ADR-0013）。
+  # 値は実行時に SERVER_SERVLET_CONTEXT_PATH で注入される。
+  # 実務でホスト名振り分けに移行すれば不要になる設定
+  servlet:
+    context-path: ${SERVER_SERVLET_CONTEXT_PATH:}
+  shutdown: graceful
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # ALBのヘルスチェック先。必要な範囲だけ公開する
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  # ECSタスク定義から注入される（ADR-0010のリリース記録と突き合わせるため）
+  commit-sha: ${APP_COMMIT_SHA:unknown}
+
+logging:
+  level:
+    root: INFO

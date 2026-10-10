@@ -1,0 +1,6 @@
+# ローカル実行用。CI/CDでは使わない
+app:
+  environment-label: local
+logging:
+  level:
+    com.example.appa: DEBUG

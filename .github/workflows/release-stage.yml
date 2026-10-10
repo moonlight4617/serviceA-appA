@@ -1,0 +1,25 @@
+# stageへのリリース（承認1段）
+
+name: Release stage
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: リリース対象のcommit SHA（省略時は現在のmain）
+        required: false
+      ticket_ids:
+        description: 関連チケットID（カンマ区切り）
+        required: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  release:
+    uses: moonlight4617/platform-cicd/.github/workflows/release-stage.yml@v1
+    with:
+      commit_sha: ${{ inputs.commit_sha }}
+      ticket_ids: ${{ inputs.ticket_ids }}
+    secrets: inherit
