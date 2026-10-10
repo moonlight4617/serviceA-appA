@@ -123,3 +123,16 @@ ADR-0005により、検証済みの成果物をdigestで指定する必要があ
 | Gradle Wrapper | **未同梱**。`gradle wrapper` で生成する必要がある。CIは環境のgradleにフォールバックする |
 | Dockerイメージのビルド | 未検証 |
 | ECSへの実デプロイ | 未実施（`platform-infra` のapply前） |
+
+## 構築済みの環境（2026-10-11）
+
+`platform-infra` をapply済み。共通ALBのパス振り分けは次のとおり。
+
+| 環境 | URL |
+|---|---|
+| dev | `http://<ALBのDNS名>/dev/appA` |
+| stage | `http://<ALBのDNS名>/stage/appA` |
+| prod | `http://<ALBのDNS名>/prod/appA` |
+
+ALBのDNS名はSSM Parameter Store `/platform/<env>/alb_dns_name` から取得できる
+（ADR-0002によりリポジトリには記載しない）。
