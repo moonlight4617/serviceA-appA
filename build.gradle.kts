@@ -31,25 +31,25 @@ repositories {
     mavenCentral()
 }
 
-// セキュリティゲート（ADR-0008）が検出した埋め込みTomcatのCRITICAL脆弱性
-// （CVE-2026-65182 / CVE-2026-65905 / CVE-2026-68525）への対応。
-// Spring Bootが管理するバージョンを修正版で上書きする。
-//
-// 抑制（security-exceptions.yaml）ではなく実際に上げることで対応している。
+// セキュリティゲート（ADR-0008）が検出した脆弱性への対応。
+// 抑制ではなく実際にバージョンを上げる。
 // 修正版が提供されている脆弱性は抑制の対象にすべきではない。
+//
+// 上書きは io.spring.dependency-management プラグインが読む
+// BOMのプロパティ名で行う必要がある。
+// Gradleの dependencies { constraints { ... } } では効かない
+// （BOMのバージョン管理が優先されるため）。
+//
+// プロパティ名は spring-boot-dependencies の pom で確認できる:
+//   https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-dependencies/<ver>/
+//
+// 埋め込みTomcat: CVE-2026-65182 / 65905 / 68525（BOMの既定 11.0.24）
 extra["tomcat.version"] = "11.0.25"
 
-dependencies {
-    // セキュリティゲート（stageモード）が検出したJacksonのHIGH 5件への対応。
-    // CVE-2026-68497 / 89407 / 89425 / 91776 / 91777
-    //
-    // Spring Bootが管理するバージョン（3.1.5）には修正が入っていないため、
-    // 制約で上書きする。プロパティ名に依存しない書き方にしている。
-    constraints {
-        implementation("tools.jackson.core:jackson-core:3.1.7")
-        implementation("tools.jackson.core:jackson-databind:3.1.7")
-    }
+// Jackson: CVE-2026-68497 / 89407 / 89425 / 91776 / 91777（BOMの既定 3.1.5）
+extra["jackson-bom.version"] = "3.1.7"
 
+dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     // ALBのヘルスチェック先として /actuator/health を使う
