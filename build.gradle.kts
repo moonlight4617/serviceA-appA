@@ -40,6 +40,16 @@ repositories {
 extra["tomcat.version"] = "11.0.25"
 
 dependencies {
+    // セキュリティゲート（stageモード）が検出したJacksonのHIGH 5件への対応。
+    // CVE-2026-68497 / 89407 / 89425 / 91776 / 91777
+    //
+    // Spring Bootが管理するバージョン（3.1.5）には修正が入っていないため、
+    // 制約で上書きする。プロパティ名に依存しない書き方にしている。
+    constraints {
+        implementation("tools.jackson.core:jackson-core:3.1.7")
+        implementation("tools.jackson.core:jackson-databind:3.1.7")
+    }
+
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     // ALBのヘルスチェック先として /actuator/health を使う
