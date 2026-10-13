@@ -124,6 +124,24 @@ ADR-0005により、検証済みの成果物をdigestで指定する必要があ
 | Dockerイメージのビルド | 未検証 |
 | ECSへの実デプロイ | 未実施（`platform-infra` のapply前） |
 
+## 検証済みのリリース（2026-10-12）
+
+`appA/v1.0.0` を本番まで通した。同一のimage digestが
+1回だけビルドされ、stage → prod へ昇格したことを記録から確認できる。
+
+| 日時 | 環境 | 内容 |
+|---|---|---|
+| 02:23 | build | mainマージでビルド（digest確定） |
+| 02:32 | stage | 同一digestをデプロイ（承認1段） |
+| 04:14 | prod | 同一digestをデプロイ（承認3段）+ タグ `appA/v1.0.0` |
+
+稼働中のアプリは同じcommitで、プロファイルとパスだけが環境ごとに異なる。
+
+```
+stage  profile=stage  label=stage  commit=a8f2fed9c3c5  path=/stage/appA
+prod   profile=prod   label=prod   commit=a8f2fed9c3c5  path=/prod/appA
+```
+
 ## 構築済みの環境（2026-10-11）
 
 `platform-infra` をapply済み。共通ALBのパス振り分けは次のとおり。
