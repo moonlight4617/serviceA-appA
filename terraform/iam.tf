@@ -40,6 +40,16 @@ resource "aws_iam_role" "execution" {
   tags = {
     Name = "${local.name}-exec"
   }
+
+  # ポリシーのアタッチは aws_iam_role_policy_attachment で管理するため、
+  # ロール側の managed_policy_arns は見ない。
+  #
+  # これを指定しないと、refresh時に実態の値（アタッチ済みのポリシー）が
+  # 入って毎回ドリフトとして報告される。
+  # 実機のドリフト検知で stage / prod の両方で誤検知が出ていた（ADR-0012の補足）。
+  lifecycle {
+    ignore_changes = [managed_policy_arns]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "execution_managed" {
